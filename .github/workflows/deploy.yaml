@@ -1,0 +1,68 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main 
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: development
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up SSH key for deployment
+      uses: appleboy/ssh-action@v1.2.1
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22 
+
+    - name: Sync files with server
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./"
+        target: "./qwitix-infra"
+        rm: true 
+
+    - name: Restart Docker Compose with environment variables
+      uses: appleboy/ssh-action@v1.2.1
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: |
+          export SERVER_NAME=${{ secrets.SERVER_NAME }} &&
+          export SSL_CERT_PATH=${{ secrets.SSL_CERT_PATH }} &&
+          export SSL_KEY_PATH=${{ secrets.SSL_KEY_PATH }} &&
+          export WEB_IMAGE=${{ secrets.WEB_IMAGE }} &&
+          export API_IMAGE=${{ secrets.API_IMAGE }} &&
+          cd /path/to/your/repo &&
+          docker-compose pull &&
+          docker-compose up -d
+
+
+    - name: Restart Docker Compose with environment variables
+      uses: appleboy/ssh-action@v1.2.1
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: |
+          export SERVER_NAME=${{ secrets.SERVER_NAME }} &&
+          export SSL_CERT_PATH=${{ secrets.SSL_CERT_PATH }} &&
+          export SSL_KEY_PATH=${{ secrets.SSL_KEY_PATH }} &&
+          export WEB_IMAGE=${{ secrets.WEB_IMAGE }} &&
+          export API_IMAGE=${{ secrets.API_IMAGE }} &&
+          cd /path/to/your/repo &&
+          docker-compose pull &&
+          docker-compose up -d
