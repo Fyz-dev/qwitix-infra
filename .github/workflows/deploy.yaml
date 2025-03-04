@@ -36,7 +36,7 @@ jobs:
           target: ${{ env.TARGET_DIR }}
           rm: true
 
-      - name: Restart Docker Compose with environment variables
+      - name: Restart Docker Compose
         uses: appleboy/ssh-action@v1.2.1
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -44,11 +44,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            export SERVER_NAME=${{ secrets.SERVER_NAME }} &&
-            export SSL_CERT_PATH=${{ secrets.SSL_CERT_PATH }} &&
-            export SSL_KEY_PATH=${{ secrets.SSL_KEY_PATH }} &&
-            export WEB_IMAGE=${{ secrets.WEB_IMAGE }} &&
-            export API_IMAGE=${{ secrets.API_IMAGE }} &&
-            cd ${{ env.TARGET_DIR }} &&
             sudo docker compose pull &&
             sudo docker compose up -d
