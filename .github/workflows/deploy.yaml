@@ -44,5 +44,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
+            cd ${{ env.TARGET_DIR }} &&
             sudo docker compose pull &&
             sudo docker compose up -d
