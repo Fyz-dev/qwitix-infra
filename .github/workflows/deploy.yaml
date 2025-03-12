@@ -17,14 +17,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up SSH key for deployment
-        uses: appleboy/ssh-action@v1.2.1
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-
       - name: Sync files with server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -44,5 +36,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            sudo docker compose pull &&
+            cd ${{ env.TARGET_DIR }}
+            echo "${{ secrets.ENV_FILE }}" > .env
+            sudo docker compose pull
             sudo docker compose up -d
+            rm -f .env
