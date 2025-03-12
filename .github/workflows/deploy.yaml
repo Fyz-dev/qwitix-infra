@@ -39,5 +39,5 @@ jobs:
             cd ${{ env.TARGET_DIR }}
             echo "${{ secrets.ENV_FILE }}" > .env
             sudo docker compose pull
-            sudo docker compose up -d
+            sudo docker compose up -d --build
             rm -f .env
