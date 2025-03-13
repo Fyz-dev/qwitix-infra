@@ -12,12 +12,11 @@ services:
     image: ${CONTAINER_NAME}.azurecr.io/qwitix-api:latest
     networks:
       - app_network
-    environment:
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
     ports:
       - "8080:8080"
     depends_on:
       - mongo
+    env_file: .env
       
   mongo:
     container_name: mongo
