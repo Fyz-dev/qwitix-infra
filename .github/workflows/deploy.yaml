@@ -37,6 +37,7 @@ jobs:
           port: 22
           script: |
             cd ${{ env.TARGET_DIR }}
+            sudo az acr login --name ${{ secrets.CONTAINER_NAME }}
             echo "${{ secrets.ENV_FILE }}" > .env
             sudo docker compose pull
             sudo docker compose up -d --build
